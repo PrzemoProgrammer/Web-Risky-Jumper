@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Risky Jumper</title>
+        <meta charset="utf-8">
+        <link rel="icon" href="favicon.ico" />
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <style type="text/css">
+          /* body {
+            padding: 0px;
+            margin: 0px;
+          } */
+          
+          /* #game-container {
+            display: block;
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          } */
+
+          #loadingIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+  max-width: 20%;
+  max-height: 20%;
+  object-fit: cover;
+}
+
+    @font-face {
+      font-family: "pixel";
+      src: url("/MyApp/www/src/assets/fonts/pixel.ttf") format("truetype");
+    }
+    * {
+      font-family: "pixel";
+    }
+        </style>
+        <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+        <link rel="stylesheet" href="css/index.css">
+    </head>
+    <body>
+      <!-- <div id="game-container"></div> -->
+      <script src="cordova.js"></script>
+      <script src="src/deviceReadyHandler.js"></script>
+      <script src="src/components/Button.js"></script>
+      <script src="src/LostScreen.js"></script>
+      <script src="src/Platform.js"></script>
+      <script src="src/Player.js"></script>
+      <script src="src/Tutorial.js"></script>
+      <script src="src/RankingLabel.js"></script>
+      <script src="src/requests.js"></script>
+      <script src="src/platforms.js/index.js"></script>
+      <script src="src/scenes/PreloadScene.js"></script>
+      <script src="src/scenes/MenuScene.js"></script>
+      <script src="src/scenes/LoginScene.js"></script>
+      <script src="src/scenes/PlayScene.js"></script>
+      <script src="src/scenes/RankScene.js"></script>
+      <script src="src/scenes/PauseScene.js"></script>
+      <script src="src/scenes/RankingScene.js"></script>
+      <script src="src/scenes/SettingsScene.js"></script>
+      <script src="src/index.js"></script>
+      <img
+      id="loadingIcon"
+      src="https://i.gifer.com/3OiOT.gif"
+      alt="Loading_icon"
+    />
+    </body>
+</html>
+
