@@ -1,4 +1,4 @@
-const SERVER_URL = "https://risky-jumper.herokuapp.com";
+const SERVER_URL = "https://riskyjumper.cyclic.app";
 
 const headers = {
   "Content-Type": "application/json",
