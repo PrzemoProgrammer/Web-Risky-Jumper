@@ -378,7 +378,7 @@ class PlayScene extends Phaser.Scene {
     // this.add.bitmapText(40, -10, "pixel", "200");
 
     this.scoreText = this.add
-      .text(this.halfW, gameStartY + 150, this.score, {
+      .text(this.halfW, gameStartY + 80, this.score, {
         fontFamily: "pixel",
         fontSize: "90px",
         color: "#FFFFFF",
@@ -412,7 +412,7 @@ class PlayScene extends Phaser.Scene {
   }
 
   addPauseButton() {
-    new Button(this, gameWidth - 70, gameStartY + 150, "pauseButton").on(
+    new Button(this, gameWidth - 70, gameStartY + 80, "pauseButton").on(
       "pointerdown",
       function (event) {
         this.audio.click.play();
