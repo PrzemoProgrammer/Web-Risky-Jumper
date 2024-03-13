@@ -33,19 +33,20 @@ class PlayScene extends Phaser.Scene {
     this.addGround();
     this.addScore();
     this.onClick();
-    this.addPauseButton();
+    this.pauseButton = this.addPauseButton();
     this.addTutorial();
     this.player.startEntryGameAim(() => {
       this.isGameOver = false;
     });
     this.cameras.main.setZoom(calculateVerticalScaleFactor());
+    this.playStartSceneTween();
   }
   update() {
     this.moveClouds();
     if (this.isGameOver) return;
     this.updateGame();
     if (this.player.isTouchingRight()) this.player.bounce("right");
-    if (this.player.isFallingDown()) this.player.fall();
+    if (this.player.isFallingDown() && !this.player.canJump) this.player.fall();
   }
   addBackground() {
     this.bg = this.add
@@ -64,7 +65,7 @@ class PlayScene extends Phaser.Scene {
     this.layer1 = this.add
       .tileSprite(
         gameStartX,
-        gameHeight - 50,
+        gameHeight + 1000,
         gameWidth + deltaX,
         1041,
         "layer1"
@@ -73,21 +74,13 @@ class PlayScene extends Phaser.Scene {
     this.layer2 = this.add
       .tileSprite(
         gameStartX,
-        gameStartY + gameHeight / 10,
+        gameStartY - 100,
         gameWidth + deltaX,
         346,
         "layer2"
       )
       .setOrigin(0, 0);
   }
-  // addTileSprite(x, y, w, h, sprite) {
-  //   const index = this.gw / w;
-  //   this.layer1Array = [];
-  //   for (let i = 0; i <= index; i++) {
-  //     const layer = this.add.image(x, y, sprite).setOrigin(0, 1);
-  //     this.layer1Array.push(layer);
-  //   }
-  // }
 
   getItemFromLocalStorage(item) {
     return Number(localStorage.getItem(item));
@@ -151,6 +144,7 @@ class PlayScene extends Phaser.Scene {
         if (player.body.onFloor() && this.isPlayerCollidePlatform) {
           this.isPlayerCollidePlatform = false;
           player.idle();
+          platform.bounceTween();
         }
       }
     );
@@ -184,6 +178,7 @@ class PlayScene extends Phaser.Scene {
       w: 300,
       h: this.gh,
       theme: this.platformThemes[this.platformThemeIndex],
+      firstPlatform: true,
     };
     const platform = new Platform(this, config);
     this.physics.add.collider(
@@ -193,6 +188,7 @@ class PlayScene extends Phaser.Scene {
         if (player.body.onFloor() && this.isPlayerCollidePlatform) {
           this.isPlayerCollidePlatform = false;
           player.idle();
+          platform.bounceTween();
         }
       }
     );
@@ -333,18 +329,19 @@ class PlayScene extends Phaser.Scene {
   }
   updateGame() {
     if (
-      this.player.isTouchingDown() &&
+      // this.player.isTouchingDown() &&
+      this.player.canJump &&
       this.player.getPosition() >= this.platforms[1].container.x
     ) {
       this.setupGame();
     }
 
-    if (this.platformsAreMoving) return;
+    // if (this.platformsAreMoving) return;
     if (this.platforms[1].container.x <= gameStartX) {
       this.updatePlatforms();
       this.updateScore();
       this.updateGameTheme();
-      this.platformsAreMoving = false;
+      // this.platformsAreMoving = false;
     }
   }
   randomNumber(num1, num2) {
@@ -378,7 +375,7 @@ class PlayScene extends Phaser.Scene {
     // this.add.bitmapText(40, -10, "pixel", "200");
 
     this.scoreText = this.add
-      .text(this.halfW, gameStartY + 80, this.score, {
+      .text(this.halfW, gameStartY, this.score, {
         fontFamily: "pixel",
         fontSize: "90px",
         color: "#FFFFFF",
@@ -412,7 +409,7 @@ class PlayScene extends Phaser.Scene {
   }
 
   addPauseButton() {
-    new Button(this, gameWidth - 70, gameStartY + 80, "pauseButton").on(
+    return new Button(this, gameWidth - 70, gameStartY, "pauseButton").on(
       "pointerdown",
       function (event) {
         this.audio.click.play();
@@ -422,5 +419,33 @@ class PlayScene extends Phaser.Scene {
       },
       this
     );
+  }
+
+  playPlayerEntryAnimation() {
+    this.player.startEntryGameAim(() => {
+      this.isGameOver = false;
+    });
+  }
+
+  playStartSceneTween() {
+    this.tweens.add({
+      targets: this.layer1,
+      ease: "Quad.out",
+      duration: 600,
+      y: gameHeight - 50,
+    });
+    this.tweens.add({
+      targets: this.layer2,
+      ease: "Back.out",
+      duration: 800,
+      y: gameStartY + gameHeight / 10,
+    });
+
+    this.tweens.add({
+      targets: [this.pauseButton, this.scoreText],
+      ease: "Back.out",
+      duration: 500,
+      y: gameStartY + 80,
+    });
   }
 }

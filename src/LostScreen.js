@@ -134,9 +134,9 @@ class LostScreen {
   addAppearanceAnimation() {
     this.scene.tweens.add({
       targets: this.container,
-      ease: "Power2",
+      ease: "Back.out",
       y: halfGameHeight / 2 + 200,
-      duration: 300,
+      duration: 600,
     });
   }
   updateMedalColor() {
