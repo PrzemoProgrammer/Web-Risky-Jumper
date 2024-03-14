@@ -10,7 +10,7 @@ class MenuScene extends Phaser.Scene {
 
     this.canClickPlay = false;
 
-    this.cloudsMoveTween = null;
+    // this.cloudsMoveTween = null;
     this.playerMoveTween = null;
     this.playButtonTween = null;
     this.platform1Tween = null;
@@ -19,7 +19,7 @@ class MenuScene extends Phaser.Scene {
     this.audio = this.game.audio;
     this.audio.mainMenu.play();
 
-    this.addBackground();
+    // this.addBackground();
     this.addBackgroundComponents();
     this.riskyJumperText = this.addRiskyJumperText();
     this.playButton = this.addPlayButton();
@@ -133,8 +133,8 @@ class MenuScene extends Phaser.Scene {
     this.scene.bringToTop(key);
   }
   addBackgroundComponents() {
-    this.addLayer1(gameStartX, gameHeight);
-    this.addClouds(this.halfW, gameStartY + gameHeight / 4);
+    // this.addLayer1(gameStartX, gameHeight);
+    // this.addClouds(this.halfW, gameStartY + gameHeight / 4);
     this.addPlatform1(this.halfW - 150, this.gh - this.gh / 3);
     this.addPlatform2(this.halfW + 200, this.gh - this.gh / 3 - 200);
     this.addHeroIcon(this.halfW, this.halfH);
@@ -155,27 +155,27 @@ class MenuScene extends Phaser.Scene {
     });
   }
 
-  addClouds(x, y) {
-    const clouds = this.add.image(x, y, "layer2").setOrigin(0.5, 0).setScale(3);
-    this.clouds = clouds;
+  // addClouds(x, y) {
+  //   const clouds = this.add.image(x, y, "layer2").setOrigin(0.5, 0).setScale(3);
+  //   this.clouds = clouds;
 
-    const animConfig = {
-      target: clouds,
-      x: clouds.x - 20,
-      y: clouds.y + 15,
-      time: 2100,
-    };
+  //   const animConfig = {
+  //     target: clouds,
+  //     x: clouds.x - 20,
+  //     y: clouds.y + 15,
+  //     time: 2100,
+  //   };
 
-    this.tweens.add({
-      targets: clouds,
-      ease: "Back.out",
-      duration: 1000,
-      scale: 1,
-      onComplete: () => {
-        this.cloudsMoveTween = this.moveAnim(animConfig);
-      },
-    });
-  }
+  //   this.tweens.add({
+  //     targets: clouds,
+  //     ease: "Back.out",
+  //     duration: 1000,
+  //     scale: 1,
+  //     onComplete: () => {
+  //       this.cloudsMoveTween = this.moveAnim(animConfig);
+  //     },
+  //   });
+  // }
 
   addPlatform1(x, y) {
     const platform1 = this.add
@@ -364,19 +364,8 @@ class MenuScene extends Phaser.Scene {
       y: gameHeight,
     });
 
-    this.cloudsMoveTween.remove();
-    this.tweens.add({
-      targets: this.layer1,
-      ease: "Cubic.in",
-      duration: 500,
-      y: gameHeight + 1000,
-    });
-    this.tweens.add({
-      targets: this.clouds,
-      ease: "Back.in",
-      duration: 200,
-      scale: 0,
-    });
+    const backgroundScene = this.scene.get("BackgroundScene");
+    backgroundScene.removeTween();
 
     this.tweens.add({
       targets: this.heroIcon,
@@ -386,6 +375,7 @@ class MenuScene extends Phaser.Scene {
       scale: 3,
       onComplete: () => {
         this.audio.mainMenu.stop();
+        this.scene.remove("BackgroundScene");
         this.scene
           .sleep("MenuScene")
           .resume("PlayScene")

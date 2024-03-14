@@ -72,19 +72,27 @@ class PreloadScene extends Phaser.Scene {
     // StatusBar.backgroundColorByHexString("#00000000");
     localStorage.getItem("nickname")
       ? this.handleNextScene()
-      : this.startLoginScene();
+      : this.handleLoginScene();
   }
 
-  startLoginScene() {
-    this.scene.launch("LoginScene");
+  handleLoginScene() {
+    this.scene
+      .start("PlayScene")
+      .pause("PlayScene")
+      .start("BackgroundScene")
+      .start("LoginScene")
+      .swapPosition("PlayScene", "BackgroundScene")
+      .swapPosition("BackgroundScene", "LoginScene");
   }
 
   handleNextScene() {
     this.scene
       .start("PlayScene")
       .pause("PlayScene")
+      .start("BackgroundScene")
       .start("MenuScene")
-      .swapPosition("PlayScene", "MenuScene");
+      .swapPosition("PlayScene", "BackgroundScene")
+      .swapPosition("BackgroundScene", "MenuScene");
   }
 
   loadPlugin() {

@@ -45,6 +45,7 @@ const config = {
   },
   scene: [
     PreloadScene,
+    BackgroundScene,
     LoginScene,
     MenuScene,
     PlayScene,

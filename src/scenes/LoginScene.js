@@ -16,11 +16,13 @@ class LoginScene extends Phaser.Scene {
     this.profileMoveY = halfGameHeight / 4;
     this.deleteTimeResponseText = 4000;
 
-    this.addBackground(gameStartX, gameStartY);
-    this.addProfile(0, 0);
+    this.profile = this.addProfile(0, 0);
     this.addResponseText(this.profile.x, this.profile.y + 195);
-    this.addTextInput(this.profile.x, this.profile.y + 130);
-    this.addStartButton(this.profile.x, this.profile.y + 260);
+    this.addTextInput(this.profile.x, this.profile.y + 135);
+    this.startButton = this.addStartButton(
+      this.profile.x,
+      this.profile.y + 260
+    );
 
     this.container = this.add.container(halfGameWidth, halfGameHeight - 200, [
       this.profile,
@@ -28,26 +30,42 @@ class LoginScene extends Phaser.Scene {
       this.inputText,
       this.startButton,
     ]);
-    document.getElementById("loadingIcon").remove();
-  }
-  addBackground(x, y) {
-    this.bg = this.add
-      .image(x, y, "menuBg")
-      .setOrigin(0, 0)
-      .setDisplaySize(gameWidth + deltaX, gameHeight + deltaY);
+
+    if (document.getElementById("loadingIcon"))
+      document.getElementById("loadingIcon").remove();
   }
 
   addProfile(x, y) {
-    this.profile = this.add.image(x, y, "loginProfil");
+    const image = this.add.image(x, y, "loginProfil").setScale(0);
+
+    this.tweens.add({
+      targets: image,
+      ease: "Back.out",
+      duration: 1000,
+      scale: 1,
+    });
+
+    return image;
   }
 
   addStartButton(x, y) {
-    this.startButton = new Button(this, x, y, "startButton").onClick(() => {
-      if (this.isStartButtonBLocked) return;
-      this.isStartButtonBLocked = true;
-      this.addLoadingAnim(this.halfW, this.halfH);
-      this.sendServerRequest();
+    const button = new Button(this, x, y, "startButton")
+      .onClick(() => {
+        if (this.isStartButtonBLocked) return;
+        this.isStartButtonBLocked = true;
+        this.addLoadingAnim(this.halfW, this.halfH);
+        this.sendServerRequest();
+      })
+      .setScale(0);
+
+    this.tweens.add({
+      targets: button,
+      ease: "Back.out",
+      duration: 1200,
+      scale: 1,
     });
+
+    return button;
   }
 
   addTextInput(x, y) {
@@ -62,11 +80,12 @@ class LoginScene extends Phaser.Scene {
         placeholderColor: "#503af5",
         fontSize: "50px",
         fontFamily: "pixel",
-        color: "#503af5",
+        color: "#000000",
         align: "center",
         maxLength: 10,
         minLength: 3,
       })
+      .setScale(0)
 
       .on("textchange", ({ text }) => {
         if (text.includes(" ")) {
@@ -79,6 +98,13 @@ class LoginScene extends Phaser.Scene {
       .on("focus", () => {
         this.addMoveAnim();
       });
+
+    this.tweens.add({
+      targets: this.inputText,
+      ease: "Back.out",
+      duration: 700,
+      scale: 1,
+    });
   }
 
   addResponseText(x, y) {
@@ -116,21 +142,21 @@ class LoginScene extends Phaser.Scene {
     };
 
     try {
-      const value = await (await CREATE_ACCOUNT(data)).json();
-      // console.log(value);
-      if (value) {
+      const respond = await (await CREATE_ACCOUNT(data)).json();
+      // console.log(respond);
+      if (respond) {
         this.startNextScene();
       } else {
         this.addNickError();
       }
     } catch (error) {
-      this.startMenuScene();
+      this.handleNextScene();
     }
   }
 
   startNextScene() {
     localStorage.setItem("nickname", this.nickText);
-    this.startMenuScene();
+    this.handleNextScene();
   }
 
   addNickError() {
@@ -140,16 +166,6 @@ class LoginScene extends Phaser.Scene {
     setTimeout(() => {
       this.notAvailableNickname.setVisible(false);
     }, this.deleteTimeResponseText);
-  }
-
-  startMenuScene() {
-    this.scene
-      .start("PlayScene")
-      .pause("PlayScene")
-      .start("MenuScene")
-      .swapPosition("PlayScene", "MenuScene");
-
-    this.scene.remove("LoginScene");
   }
 
   addMoveAnim() {
@@ -175,5 +191,36 @@ class LoginScene extends Phaser.Scene {
 
   loadingDestroy() {
     this.loading.destroy();
+  }
+
+  changeScene() {
+    this.scene.start("MenuScene");
+    this.scene.remove("LoginScene");
+  }
+
+  handleNextScene() {
+    this.tweens.add({
+      targets: this.profile,
+      ease: "Back.in",
+      duration: 300,
+      scale: 0,
+    });
+
+    this.tweens.add({
+      targets: this.startButton,
+      ease: "Back.in",
+      duration: 500,
+      scale: 0,
+    });
+
+    this.tweens.add({
+      targets: this.inputText,
+      ease: "Back.in",
+      duration: 700,
+      scale: 0,
+      onComplete: () => {
+        this.changeScene();
+      },
+    });
   }
 }

@@ -71,7 +71,7 @@ class Label {
   addAdmin() {
     const color = "#B8860B";
     if (this.localNick === this.nickname) {
-      this.nick.setColor(color).setStroke(color);
+      this.nick.setColor(color);
     }
 
     if (this.isAdmin()) {
