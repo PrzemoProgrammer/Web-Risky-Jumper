@@ -96,7 +96,6 @@ class LoginScene extends Phaser.Scene {
         this.nickText = text;
       })
       .on("focus", () => {
-        this.cameras.main.setZoom(calculateVerticalScaleFactor());
         this.addMoveAnim();
       });
 
@@ -105,9 +104,6 @@ class LoginScene extends Phaser.Scene {
       ease: "Back.out",
       duration: 700,
       scale: 1,
-        onComplete: () => {
-        this.cameras.main.setZoom(calculateVerticalScaleFactor());
-      },
     });
   }
 
