@@ -74,7 +74,7 @@ function onresize() {
 
   game.scene.scenes.forEach((element, index) => {
     if (index === 0) return;
-    // console.log(element);
+
     element.cameras.main.setZoom(scaleFactor);
 
     // element.scale.resize(
