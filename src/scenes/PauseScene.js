@@ -12,38 +12,46 @@ class PauseScene extends Phaser.Scene {
     this.previousScene = currentScene;
     this.audio = this.game.audio;
 
-    this.addBackground(gameStartX, gameStartY);
+    this.createComponents()
 
-    this.addLayer1(gameStartX, gameHeight);
-
-    this.addGround(gameStartX, gameHeight);
-    this.addPauseText(this.halfW, gameStartY + 160);
-
-    this.addRestartButton(this.halfW, this.halfH);
-    this.addSettingsButton(this.halfW, this.halfH + 150);
-    this.addBackButton(this.halfW, gameHeight - 150);
     this.cameras.main.setZoom(calculateVerticalScaleFactor());
   }
 
+  backToPreviousScene() {
+    this.audio.click.play();
+    this.scene.setVisible(false, "PauseScene");
+    this.scene.bringToTop(this.previousScene);
+    this.scene.resume(this.previousScene);
+    this.scene.setVisible(true, this.previousScene);
+    this.scene.pause();
+  }
+
+  changeScene(key) {
+    this.scene.setVisible(true, key);
+    this.scene.bringToTop(key);
+    this.scene.resume(key);
+    if (!this.scene.isPaused(key)) {
+      this.scene.launch(key);
+    }
+  }
+
   addBackground(x, y) {
-    this.add
-      .image(x, y, "menuBg")
+    new Sprite(this, x, y, "menuBg")
       .setOrigin(0, 0)
       .setDisplaySize(gameWidth + deltaX, gameHeight + deltaY);
   }
 
   addLayer1(x, y) {
-    this.add
-      .tileSprite(x, y, gameWidth + deltaX, 1240, "menuLayer1")
+    new TileSprite(this, x, y, gameWidth + deltaX, 1240, "menuLayer1")
       .setOrigin(0, 1);
   }
 
   addGround(x, y) {
-    this.add.tileSprite(x, y, gameWidth + deltaX, 55, "ground").setOrigin(0, 1);
+    new TileSprite(this, x, y, gameWidth + deltaX, 55, "ground").setOrigin(0, 1);
   }
 
   addPauseText(x, y) {
-    this.add.image(x, y, "pauseText").setScale(0.8);
+    new Sprite(this, x, y, "pauseText").setScale(0.8);
   }
 
   addSettingsButton(x, y) {
@@ -67,21 +75,13 @@ class PauseScene extends Phaser.Scene {
     });
   }
 
-  backToPreviousScene() {
-    this.audio.click.play();
-    this.scene.setVisible(false, "PauseScene");
-    this.scene.bringToTop(this.previousScene);
-    this.scene.resume(this.previousScene);
-    this.scene.setVisible(true, this.previousScene);
-    this.scene.pause();
-  }
-
-  changeScene(key) {
-    this.scene.setVisible(true, key);
-    this.scene.bringToTop(key);
-    this.scene.resume(key);
-    if (!this.scene.isPaused(key)) {
-      this.scene.launch(key);
-    }
+  createComponents() {
+    this.addBackground(gameStartX, gameStartY);
+    this.addLayer1(gameStartX, gameHeight);
+    this.addGround(gameStartX, gameHeight);
+    this.addPauseText(this.halfW, gameStartY + 160);
+    this.addRestartButton(this.halfW, this.halfH);
+    this.addSettingsButton(this.halfW, this.halfH + 150);
+    this.addBackButton(this.halfW, gameHeight - 150);
   }
 }

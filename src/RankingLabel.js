@@ -13,21 +13,12 @@ class Label {
       muran: "Muran",
     };
 
-    this.addBackground();
-    this.addNick(this.bg.x - 230, this.bg.y - 20);
-    this.addScore(this.bg.x + 300, this.bg.y - 30);
-
-    this.container = this.scene.add.container(this.x, this.y, [
-      this.bg,
-      this.score,
-      this.nick,
-    ]);
-    this.addRankNumbers(this.bg.x - this.bg.width / 2 + 10, this.bg.y - 36);
+    this.createComponents()
     this.addAdmin();
   }
 
   addBackground() {
-    this.bg = this.scene.add.image(0, 0, "rankingPlayerBg");
+    this.bg = new Sprite(this.scene, 0, 0, "rankingPlayerBg");
   }
 
   addScore(x, y) {
@@ -40,7 +31,7 @@ class Label {
   }
 
   addMedal(x, y, image) {
-    this.medal = this.scene.add.image(x, y, image);
+    this.medal = new Sprite(this.scene, x, y, image);
     this.container.add([this.medal]);
   }
 
@@ -110,5 +101,18 @@ class Label {
       strokeThickness: 10,
       // shadow: { blur: 0, stroke: false, fill: false },
     });
+  }
+
+  createComponents() {
+    this.addBackground();
+    this.addNick(this.bg.x - 230, this.bg.y - 20);
+    this.addScore(this.bg.x + 300, this.bg.y - 30);
+
+    this.container = this.scene.add.container(this.x, this.y, [
+      this.bg,
+      this.score,
+      this.nick,
+    ]);
+    this.addRankNumbers(this.bg.x - this.bg.width / 2 + 10, this.bg.y - 36);
   }
 }

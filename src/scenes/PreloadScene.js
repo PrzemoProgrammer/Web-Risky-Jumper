@@ -17,8 +17,6 @@ class PreloadScene extends Phaser.Scene {
       true
     );
 
-    this.load.setPath("./src/assets/images");
-    // this.loadAtlas();
     this.loadImages();
     this.loadFonts();
     this.loadAudio();
@@ -114,67 +112,10 @@ class PreloadScene extends Phaser.Scene {
     // this.load.font("pixel", "pixel.ttf");
   }
 
-  // loadAtlas() {
-  //   this.load.atlas("atlas_1", "texture-0.png", "texture-0.json");
-  //   this.load.atlas("atlas_2", "texture-1.png", "texture-1.json");
-  // }
-
   loadImages() {
-    this.images = [
-      "background",
-      "playButton",
-      "riskyJumperText",
-      "settingsButton",
-      "bg1",
-      "floor",
-      "replayButton",
-      "scoreBoard",
-      "achivButton",
-      "ground",
-      "platformFloor",
-      "rankingButton",
-      "rankScreenMedal",
-      "rankScreenMedalColor",
-      "newRecordUpdate",
-      "medalSmaller",
-      "smallerMedalColor",
-      "backButton",
-      "pauseButton",
-      "pauseText",
-      "settingsText",
-      "soundOnOff",
-      "slider",
-      "rankingPlayerBg",
-      "hand1",
-      "hand2",
-      "tutorialLine",
-      "darkScreen",
-      "shareButton",
-      "firstPlace",
-      "secondPlace",
-      "thirdPlace",
-      "leaderBoardStatus",
-      "loginProfil",
-      "medalShine",
-      "medalText",
-      "loading",
-      "menuBg",
-      "menuLayer1",
-      "heroMenuIcon",
-      "menuPlatform1",
-      "menuPlatform2",
-      "leaderboardText",
-      "startButton",
-    ];
-    this.images.forEach((img) => {
-      this.load.image(img, `${img}.png`);
-    });
-    for (let i = 1; i <= 2; i++) {
-      this.load.image(`layer${i}`, `layer${i}.png`);
-    }
-    for (let i = 1; i <= 9; i++) {
-      this.load.image(`floor${i}`, `floor${i}.png`);
-    }
+    this.load.setPath("./src/assets/images");
+
+    this.load.atlas("gameAtlas", "assets.webp", "assets.json");
     this.load.spritesheet("player", "player.png", {
       frameWidth: 855 / 9,
       frameHeight: 95,

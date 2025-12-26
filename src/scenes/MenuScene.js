@@ -10,7 +10,6 @@ class MenuScene extends Phaser.Scene {
 
     this.canClickPlay = false;
 
-    // this.cloudsMoveTween = null;
     this.playerMoveTween = null;
     this.playButtonTween = null;
     this.platform1Tween = null;
@@ -19,28 +18,121 @@ class MenuScene extends Phaser.Scene {
     this.audio = this.game.audio;
     this.audio.mainMenu.play();
 
-    // this.addBackground();
-    this.addBackgroundComponents();
-    this.riskyJumperText = this.addRiskyJumperText();
-    this.playButton = this.addPlayButton();
-    this.settingsButton = this.addSettingsButton();
-    this.rankingButton = this.addRankingButton();
-    this.achievementsButton = this.addAchievementsButton();
+    this.createComponents()
     this.checkConnectionStatus();
-    if (document.getElementById("loadingIcon"))
-      document.getElementById("loadingIcon").remove();
+
+    if (document.getElementById("loadingIcon")) document.getElementById("loadingIcon").remove();
+  }
+
+  changeScene(key, key2) {
+    if (!this.scene.isPaused(key)) {
+      this.scene.launch(key, { currentScene: key2 });
+      this.scene.bringToTop(key);
+      return;
+    }
+
+    const scene = this.scene.get(key);
+    this.scene.pause();
+    this.scene.setVisible(false, key2);
+    this.scene.setVisible(true, key);
+    scene.scene.restart({ currentScene: key2 });
+    this.scene.bringToTop(key);
+  }
+
+  stopTweens() {
+    this.playerMoveTween.remove();
+    this.playButtonTween.remove();
+    this.platform1Tween.remove();
+    this.platform2Tween.remove();
+    this.playerMoveTween = null;
+    this.playButtonTween = null;
+    this.platform1Tween = null;
+    this.platform2Tween = null;
+  }
+
+  moveAnim({ target, x, y, time, ease = "Sine.easeInOut" }) {
+    return this.tweens.add({
+      targets: target,
+      x,
+      y,
+      ease,
+      duration: time,
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  checkConnectionStatus() {
+    if (localStorage.getItem("nickname")) return;
+    this.addConnectionProblemText(this.halfW, this.halfH);
+  }
+
+  handleNextScene() {
+    this.audio.click.play();
+    this.stopTweens();
+
+    this.tweens.add({
+      targets: this.riskyJumperText,
+      ease: "Back.in",
+      duration: 300,
+      scale: 0,
+    });
+
+    this.tweens.add({
+      targets: [
+        this.settingsButton,
+        this.rankingButton,
+        this.achievementsButton,
+      ],
+      ease: "Back.in",
+      duration: 200,
+      y: gameHeight + 200,
+    });
+
+    this.tweens.add({
+      targets: [this.platform1, this.playButton],
+      ease: "Back.in",
+      duration: 400,
+      y: gameHeight + 200,
+    });
+
+    this.tweens.add({
+      targets: this.platform2,
+      ease: "Back.in",
+      duration: 300,
+      y: gameHeight,
+    });
+
+    const backgroundScene = this.scene.get("BackgroundScene");
+    backgroundScene.removeTween();
+
+    this.tweens.add({
+      targets: this.heroIcon,
+      ease: "Back.in",
+      duration: 500,
+      y: 0,
+      scale: 3,
+      onComplete: () => {
+        this.audio.mainMenu.stop();
+        this.scene.remove("BackgroundScene");
+        this.scene
+          .sleep("MenuScene")
+          .resume("PlayScene")
+          .swapPosition("MenuScene", "PlayScene");
+        // this.scene.setVisible(false, "MenuScene");
+        this.scene.destroy(false, "MenuScene");
+      },
+    });
   }
 
   addBackground() {
-    this.add
-      .image(gameStartX, gameStartY, "menuBg")
+    new Sprite(this, gameStartX, gameStartY, "menuBg")
       .setOrigin(0, 0)
       .setDisplaySize(gameWidth + deltaX, gameHeight + deltaY);
   }
 
   addRiskyJumperText() {
-    const image = this.add
-      .image(this.halfW, gameStartY + 100, "riskyJumperText")
+    const image = new Sprite(this, this.halfW, gameStartY + 100, "riskyJumperText")
       .setOrigin(0.5, 0)
       .setScale(0);
 
@@ -118,20 +210,7 @@ class MenuScene extends Phaser.Scene {
 
     return button;
   }
-  changeScene(key, key2) {
-    if (!this.scene.isPaused(key)) {
-      this.scene.launch(key, { currentScene: key2 });
-      this.scene.bringToTop(key);
-      return;
-    }
 
-    const scene = this.scene.get(key);
-    this.scene.pause();
-    this.scene.setVisible(false, key2);
-    this.scene.setVisible(true, key);
-    scene.scene.restart({ currentScene: key2 });
-    this.scene.bringToTop(key);
-  }
   addBackgroundComponents() {
     // this.addLayer1(gameStartX, gameHeight);
     // this.addClouds(this.halfW, gameStartY + gameHeight / 4);
@@ -142,8 +221,7 @@ class MenuScene extends Phaser.Scene {
   }
 
   addLayer1(x, y) {
-    const layer1 = this.add
-      .tileSprite(x, y + 1000, gameWidth + deltaX, 1240, "menuLayer1")
+    const layer1 = new TileSprite(this, x, y + 1000, gameWidth + deltaX, 1240, "menuLayer1")
       .setOrigin(0, 1);
     this.layer1 = layer1;
 
@@ -155,31 +233,8 @@ class MenuScene extends Phaser.Scene {
     });
   }
 
-  // addClouds(x, y) {
-  //   const clouds = this.add.image(x, y, "layer2").setOrigin(0.5, 0).setScale(3);
-  //   this.clouds = clouds;
-
-  //   const animConfig = {
-  //     target: clouds,
-  //     x: clouds.x - 20,
-  //     y: clouds.y + 15,
-  //     time: 2100,
-  //   };
-
-  //   this.tweens.add({
-  //     targets: clouds,
-  //     ease: "Back.out",
-  //     duration: 1000,
-  //     scale: 1,
-  //     onComplete: () => {
-  //       this.cloudsMoveTween = this.moveAnim(animConfig);
-  //     },
-  //   });
-  // }
-
   addPlatform1(x, y) {
-    const platform1 = this.add
-      .image(x, gameHeight, "menuPlatform1")
+    const platform1 = new Sprite(this, x, gameHeight, "menuPlatform1")
       .setOrigin(0.5, 0);
     this.platform1 = platform1;
 
@@ -202,8 +257,7 @@ class MenuScene extends Phaser.Scene {
   }
 
   addPlatform2(x, y) {
-    const platform2 = this.add
-      .image(x, gameHeight, "menuPlatform2")
+    const platform2 = new Sprite(this, x, gameHeight, "menuPlatform2")
       .setOrigin(0.5, 0);
     this.platform2 = platform2;
 
@@ -226,8 +280,7 @@ class MenuScene extends Phaser.Scene {
   }
 
   addHeroIcon(x, y) {
-    const menuHero = this.add
-      .image(x, 0, "heroMenuIcon")
+    const menuHero = new Sprite(this, x, 0, "heroMenuIcon")
       .setOrigin(0.5, 0.5)
       .setScale(3);
     this.heroIcon = menuHero;
@@ -253,8 +306,7 @@ class MenuScene extends Phaser.Scene {
   }
 
   addGround(x, y) {
-    const ground = this.add
-      .tileSprite(x, y + 50, gameWidth + deltaX, 55, "ground")
+    const ground = new TileSprite(this, x, y + 50, gameWidth + deltaX, 55, "ground")
       .setOrigin(0, 1);
 
     this.tweens.add({
@@ -265,17 +317,7 @@ class MenuScene extends Phaser.Scene {
     });
   }
 
-  moveAnim({ target, x, y, time, ease = "Sine.easeInOut" }) {
-    return this.tweens.add({
-      targets: target,
-      x,
-      y,
-      ease,
-      duration: time,
-      yoyo: true,
-      repeat: -1,
-    });
-  }
+
   addPlayButton() {
     const button = new Button(
       this,
@@ -323,77 +365,12 @@ class MenuScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5);
   }
 
-  checkConnectionStatus() {
-    if (localStorage.getItem("nickname")) return;
-    this.addConnectionProblemText(this.halfW, this.halfH);
-  }
-
-  handleNextScene() {
-    this.audio.click.play();
-    this.stopTweens();
-
-    this.tweens.add({
-      targets: this.riskyJumperText,
-      ease: "Back.in",
-      duration: 300,
-      scale: 0,
-    });
-
-    this.tweens.add({
-      targets: [
-        this.settingsButton,
-        this.rankingButton,
-        this.achievementsButton,
-      ],
-      ease: "Back.in",
-      duration: 200,
-      y: gameHeight + 200,
-    });
-
-    this.tweens.add({
-      targets: [this.platform1, this.playButton],
-      ease: "Back.in",
-      duration: 400,
-      y: gameHeight + 200,
-    });
-
-    this.tweens.add({
-      targets: this.platform2,
-      ease: "Back.in",
-      duration: 300,
-      y: gameHeight,
-    });
-
-    const backgroundScene = this.scene.get("BackgroundScene");
-    backgroundScene.removeTween();
-
-    this.tweens.add({
-      targets: this.heroIcon,
-      ease: "Back.in",
-      duration: 500,
-      y: 0,
-      scale: 3,
-      onComplete: () => {
-        this.audio.mainMenu.stop();
-        this.scene.remove("BackgroundScene");
-        this.scene
-          .sleep("MenuScene")
-          .resume("PlayScene")
-          .swapPosition("MenuScene", "PlayScene");
-        // this.scene.setVisible(false, "MenuScene");
-        this.scene.destroy(false, "MenuScene");
-      },
-    });
-  }
-
-  stopTweens() {
-    this.playerMoveTween.remove();
-    this.playButtonTween.remove();
-    this.platform1Tween.remove();
-    this.platform2Tween.remove();
-    this.playerMoveTween = null;
-    this.playButtonTween = null;
-    this.platform1Tween = null;
-    this.platform2Tween = null;
+  createComponents() {
+    this.addBackgroundComponents();
+    this.riskyJumperText = this.addRiskyJumperText();
+    this.playButton = this.addPlayButton();
+    this.settingsButton = this.addSettingsButton();
+    this.rankingButton = this.addRankingButton();
+    this.achievementsButton = this.addAchievementsButton();
   }
 }

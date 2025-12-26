@@ -11,36 +11,26 @@ class SettingsScene extends Phaser.Scene {
     this.audio = this.game.audio;
     this.isMusic = true;
     this.isSound = true;
-    this.addBackground(gameStartX, gameStartY);
-    this.addLayer1(gameStartX, gameHeight);
-    this.addGround(gameStartX, gameHeight);
-    this.addSettingsText(this.halfW, gameStartY + 160);
-    this.addMusicText(this.halfW - 300, this.gh / 3);
-    this.addMusicSLider(this.musicText.x + 340, this.musicText.y - 30);
-    this.addSoundText(this.halfW - 300, this.gh / 3 + 150);
-    this.addSoundSLider(this.soundsText.x + 340, this.soundsText.y - 30);
-    this.addBackButton(this.halfW, gameHeight - 150);
+
+    this.createComponents()
   }
   addBackground(x, y) {
-    this.background = this.add
-      .image(x, y, "menuBg")
+    this.background = new Sprite(this, x, y, "menuBg")
       .setOrigin(0, 0)
       .setDisplaySize(gameWidth + deltaX, gameHeight + deltaY);
   }
 
   addLayer1(x, y) {
-    this.add
-      .tileSprite(x, y, gameWidth + deltaX, 1240, "menuLayer1")
+    new TileSprite(this, x, y, gameWidth + deltaX, 1240, "menuLayer1")
       .setOrigin(0, 1);
   }
 
   addGround(x, y) {
-    this.add.tileSprite(x, y, gameWidth + deltaX, 55, "ground").setOrigin(0, 1);
+    new TileSprite(this, x, y, gameWidth + deltaX, 55, "ground").setOrigin(0, 1);
   }
 
   addSettingsText(x, y) {
-    this.settingsText = this.add
-      .image(x, y, "settingsText", {
+    this.settingsText = new Sprite(this, x, y, "settingsText", {
         fontFamily: "pixel",
       })
       .setScale(0.8);
@@ -74,9 +64,8 @@ class SettingsScene extends Phaser.Scene {
     });
   }
   addMusicSLider(x, y) {
-    const bg = this.add.image(x, y, "soundOnOff").setOrigin(0, 0);
-    let slider = this.add
-      .image(bg.x + bg.width / 2, bg.y, "slider")
+    const bg = new Sprite(this, x, y, "soundOnOff").setOrigin(0, 0);
+    let slider = new Sprite(this, bg.x + bg.width / 2, bg.y, "slider")
       .setOrigin(0, 0)
       .setInteractive()
       .on(
@@ -90,9 +79,8 @@ class SettingsScene extends Phaser.Scene {
       );
   }
   addSoundSLider(x, y) {
-    const bg = this.add.image(x, y, "soundOnOff").setOrigin(0, 0);
-    let slider = this.add
-      .image(bg.x + bg.width / 2, bg.y, "slider")
+    const bg = new Sprite(this, x, y, "soundOnOff").setOrigin(0, 0);
+    let slider = new Sprite(this, bg.x + bg.width / 2, bg.y, "slider")
       .setOrigin(0, 0)
       .setInteractive()
       .on(
@@ -113,5 +101,17 @@ class SettingsScene extends Phaser.Scene {
   addSliderMoveAnim(slider, value) {
     const x = slider.x + (value ? slider.width : -slider.width);
     this.tweens.add({ targets: slider, ease: "Power2", x: x, duration: 200 });
+  }
+
+  createComponents() {
+    this.addBackground(gameStartX, gameStartY);
+    this.addLayer1(gameStartX, gameHeight);
+    this.addGround(gameStartX, gameHeight);
+    this.addSettingsText(this.halfW, gameStartY + 160);
+    this.addMusicText(this.halfW - 300, this.gh / 3);
+    this.addMusicSLider(this.musicText.x + 340, this.musicText.y - 30);
+    this.addSoundText(this.halfW - 300, this.gh / 3 + 150);
+    this.addSoundSLider(this.soundsText.x + 340, this.soundsText.y - 30);
+    this.addBackButton(this.halfW, gameHeight - 150);
   }
 }

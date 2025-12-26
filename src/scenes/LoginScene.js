@@ -16,27 +16,84 @@ class LoginScene extends Phaser.Scene {
     this.profileMoveY = halfGameHeight / 4;
     this.deleteTimeResponseText = 4000;
 
-    this.profile = this.addProfile(0, 0);
-    this.addResponseText(this.profile.x, this.profile.y + 195);
-    this.addTextInput(this.profile.x, this.profile.y + 135);
-    this.startButton = this.addStartButton(
-      this.profile.x,
-      this.profile.y + 260
-    );
-
-    this.container = this.add.container(halfGameWidth, halfGameHeight - 200, [
-      this.profile,
-      this.notAvailableNickname,
-      this.inputText,
-      this.startButton,
-    ]);
-
-    if (document.getElementById("loadingIcon"))
-      document.getElementById("loadingIcon").remove();
+    if (document.getElementById("loadingIcon")) document.getElementById("loadingIcon").remove();
+  
+    this.createComponents()
   }
 
+  loadingDestroy() {
+    this.loading.destroy();
+  }
+
+  changeScene() {
+    this.scene.start("MenuScene");
+    this.scene.remove("LoginScene");
+  }
+
+  handleNextScene() {
+    this.tweens.add({
+      targets: this.profile,
+      ease: "Back.in",
+      duration: 300,
+      scale: 0,
+    });
+
+    this.tweens.add({
+      targets: this.startButton,
+      ease: "Back.in",
+      duration: 500,
+      scale: 0,
+    });
+
+    this.tweens.add({
+      targets: this.inputText,
+      ease: "Back.in",
+      duration: 700,
+      scale: 0,
+      onComplete: () => {
+        this.changeScene();
+      },
+    });
+  }
+
+  generateId() {
+    let randomNumbers = [];
+
+    for (let i = 0; i < 10; i++) {
+      randomNumbers.push(Math.floor(Math.random() * 100));
+    }
+    const id = randomNumbers.join("");
+    localStorage.setItem("id", id);
+
+    return id;
+  }
+
+  async sendServerRequest() {
+    const data = {
+      nick: this.nickText,
+      id: this.id,
+    };
+
+    try {
+      const respond = await (await CREATE_ACCOUNT(data)).json();
+      // console.log(respond);
+      if (respond) {
+        this.startNextScene();
+      } else {
+        this.addNickError();
+      }
+    } catch (error) {
+      this.handleNextScene();
+    }
+  }
+
+  startNextScene() {
+    localStorage.setItem("nickname", this.nickText);
+    this.handleNextScene();
+  }
+  
   addProfile(x, y) {
-    const image = this.add.image(x, y, "loginProfil").setScale(0);
+    const image = new Sprite(this, x, y, "loginProfil").setScale(0);
 
     this.tweens.add({
       targets: image,
@@ -123,42 +180,6 @@ class LoginScene extends Phaser.Scene {
       .setVisible(false);
   }
 
-  generateId() {
-    let randomNumbers = [];
-
-    for (let i = 0; i < 10; i++) {
-      randomNumbers.push(Math.floor(Math.random() * 100));
-    }
-    const id = randomNumbers.join("");
-    localStorage.setItem("id", id);
-
-    return id;
-  }
-
-  async sendServerRequest() {
-    const data = {
-      nick: this.nickText,
-      id: this.id,
-    };
-
-    try {
-      const respond = await (await CREATE_ACCOUNT(data)).json();
-      // console.log(respond);
-      if (respond) {
-        this.startNextScene();
-      } else {
-        this.addNickError();
-      }
-    } catch (error) {
-      this.handleNextScene();
-    }
-  }
-
-  startNextScene() {
-    localStorage.setItem("nickname", this.nickText);
-    this.handleNextScene();
-  }
-
   addNickError() {
     this.isStartButtonBLocked = false;
     this.loadingDestroy();
@@ -178,7 +199,7 @@ class LoginScene extends Phaser.Scene {
   }
 
   addLoadingAnim(x, y) {
-    this.loading = this.add.image(x, y, "loading").setDepth(105);
+    this.loading = new Sprite(this, x, y, "loading").setDepth(105);
 
     this.tweens.add({
       targets: this.loading,
@@ -189,38 +210,21 @@ class LoginScene extends Phaser.Scene {
     });
   }
 
-  loadingDestroy() {
-    this.loading.destroy();
-  }
+  createComponents() {
+    this.profile = this.addProfile(0, 0);
+    this.addResponseText(this.profile.x, this.profile.y + 195);
+    this.addTextInput(this.profile.x, this.profile.y + 135);
+  
+    this.startButton = this.addStartButton(
+      this.profile.x,
+      this.profile.y + 260
+    );
 
-  changeScene() {
-    this.scene.start("MenuScene");
-    this.scene.remove("LoginScene");
-  }
-
-  handleNextScene() {
-    this.tweens.add({
-      targets: this.profile,
-      ease: "Back.in",
-      duration: 300,
-      scale: 0,
-    });
-
-    this.tweens.add({
-      targets: this.startButton,
-      ease: "Back.in",
-      duration: 500,
-      scale: 0,
-    });
-
-    this.tweens.add({
-      targets: this.inputText,
-      ease: "Back.in",
-      duration: 700,
-      scale: 0,
-      onComplete: () => {
-        this.changeScene();
-      },
-    });
+    this.container = this.add.container(halfGameWidth, halfGameHeight - 200, [
+      this.profile,
+      this.notAvailableNickname,
+      this.inputText,
+      this.startButton,
+    ]);
   }
 }

@@ -8,117 +8,13 @@ class LostScreen {
 
     this.deleteTimeResponseText = 4000;
     this.medalColors = [9127187, 7568545, 16170496, 205];
-    this.addScoreBoard(0, 0);
-    this.addScoreText(this.scoreBoard.x + 140, this.scoreBoard.y - 175);
-    this.addBestScoreText(this.scoreBoard.x + 140, this.scoreBoard.y + 5);
-    this.addReplayButton(this.scoreBoard.x, this.scoreBoard.y + 240);
-    this.addShareScoreButton(
-      this.bestScoreFrame.x,
-      this.bestScoreFrame.y + 200
-    );
-    this.addAchievementsButton(
-      this.replayButton.x + 150,
-      this.replayButton.y + 130
-    );
-    this.addRankingButton(this.replayButton.x - 150, this.replayButton.y + 130);
-    this.addResponseText(this.shareButton.x, this.shareButton.y + 60);
-    this.addMedal(this.scoreBoard.x - 150, this.scoreBoard.y - 60);
-    this.container = this.scene.add.container(
-      halfGameWidth,
-      -this.scoreBoard.displayHeight,
-      [
-        this.scoreBoard,
-        this.scoreText,
-        this.bestScoreText,
-        this.shareButton,
-        this.responseText,
-        this.replayButton,
-        this.achievementsButton,
-        this.rankingButton,
-        this.medalColor,
-        this.medal,
-        this.bestScoreFrame,
-      ]
-    );
+  
+    this.createComponents()
     this.updateScore();
     this.updateMedalColor();
     this.addAppearanceAnimation();
   }
-  addScoreBoard(x, y) {
-    this.scoreBoard = this.scene.add.image(x, y, "scoreBoard");
-  }
-  addMedal(x, y) {
-    this.addMedalColor(x, y);
-    this.medal = this.scene.add.image(x, y, "medalSmaller").setVisible(false);
-  }
-  addMedalColor(x, y) {
-    this.medalColor = this.scene.add
-      .image(x, y, "smallerMedalColor")
-      .setVisible(false)
-      .setTint(9127187);
-  }
-  addReplayButton(x, y) {
-    this.replayButton = new Button(this.scene, x, y, "replayButton");
-  }
-  addAchievementsButton(x, y) {
-    this.achievementsButton = new Button(this.scene, x, y, "achivButton");
-  }
-  addRankingButton(x, y) {
-    this.rankingButton = new Button(this.scene, x, y, "rankingButton");
-  }
-  addScoreText(x, y) {
-    this.scoreText = addText(this.scene, x, y, this.score);
-  }
-  addBestScoreText(x, y) {
-    this.bestScoreText = addText(this.scene, x, y, this.bestScore);
-    this.addUpdateBestRecordFrame(x, y - 110);
-  }
-  addUpdateBestRecordFrame(x, y) {
-    this.bestScoreFrame = this.scene.add
-      .image(x, y, "newRecordUpdate")
-      .setVisible(false);
-  }
 
-  addResponseText(x, y) {
-    this.responseText = this.scene.add
-      .text(x, y, "", {
-        fontFamily: "Arial",
-        fontSize: "30px",
-        color: "#00FF00",
-        stroke: "#00FF00",
-        strokeThickness: 0,
-        shadow: { blur: 0, stroke: false, fill: false },
-      })
-      .setOrigin(0.5, 0.5)
-      .setVisible(false);
-  }
-
-  changeResponseText(value) {
-    let text = "";
-    let color = "";
-
-    if (value) {
-      text = "Update successfully !";
-      color = "#00FF00";
-    } else {
-      text = "Update failed";
-      color = "#FF0000";
-    }
-
-    this.responseText.setText(text);
-    this.responseText.setColor(color);
-
-    this.responseText.setVisible(true);
-    setTimeout(() => {
-      this.responseText.setVisible(false);
-    }, this.deleteTimeResponseText);
-  }
-
-  addShareScoreButton(x, y) {
-    this.shareButton = new Button(this.scene, x, y, "shareButton").setVisible(
-      false
-    );
-  }
   setNewRecord() {
     localStorage.setItem("bestScore", this.score);
     this.bestScoreText.setText(this.score);
@@ -153,6 +49,115 @@ class LostScreen {
         this.currentMedalColor = color;
       }
     }
+  }
+
+  changeResponseText(value) {
+    let text = "";
+    let color = "";
+
+    if (value) {
+      text = "Update successfully !";
+      color = "#00FF00";
+    } else {
+      text = "Update failed";
+      color = "#FF0000";
+    }
+
+    this.responseText.setText(text);
+    this.responseText.setColor(color);
+
+    this.responseText.setVisible(true);
+    setTimeout(() => {
+      this.responseText.setVisible(false);
+    }, this.deleteTimeResponseText);
+  }
+
+  addScoreBoard(x, y) {
+    this.scoreBoard = new Sprite(this.scene, x, y, "scoreBoard");
+  }
+  addMedal(x, y) {
+    this.addMedalColor(x, y);
+    this.medal = new Sprite(this.scene, x, y, "medalSmaller").setVisible(false);
+  }
+  addMedalColor(x, y) {
+    this.medalColor = new Sprite(this.scene, x, y, "smallerMedalColor")
+      .setVisible(false)
+      .setTint(9127187);
+  }
+  addReplayButton(x, y) {
+    this.replayButton = new Button(this.scene, x, y, "replayButton");
+  }
+  addAchievementsButton(x, y) {
+    this.achievementsButton = new Button(this.scene, x, y, "achivButton");
+  }
+  addRankingButton(x, y) {
+    this.rankingButton = new Button(this.scene, x, y, "rankingButton");
+  }
+  addScoreText(x, y) {
+    this.scoreText = addText(this.scene, x, y, this.score);
+  }
+  addBestScoreText(x, y) {
+    this.bestScoreText = addText(this.scene, x, y, this.bestScore);
+    this.addUpdateBestRecordFrame(x, y - 110);
+  }
+  addUpdateBestRecordFrame(x, y) {
+    this.bestScoreFrame = new Sprite(this.scene, x, y, "newRecordUpdate")
+      .setVisible(false);
+  }
+
+  addResponseText(x, y) {
+    this.responseText = this.scene.add
+      .text(x, y, "", {
+        fontFamily: "Arial",
+        fontSize: "30px",
+        color: "#00FF00",
+        stroke: "#00FF00",
+        strokeThickness: 0,
+        shadow: { blur: 0, stroke: false, fill: false },
+      })
+      .setOrigin(0.5, 0.5)
+      .setVisible(false);
+  }
+
+  addShareScoreButton(x, y) {
+    this.shareButton = new Button(this.scene, x, y, "shareButton").setVisible(
+      false
+    );
+  }
+
+  createComponents() {
+    this.addScoreBoard(0, 0);
+    this.addScoreText(this.scoreBoard.x + 140, this.scoreBoard.y - 175);
+    this.addBestScoreText(this.scoreBoard.x + 140, this.scoreBoard.y + 5);
+    this.addReplayButton(this.scoreBoard.x, this.scoreBoard.y + 240);
+    this.addShareScoreButton(
+      this.bestScoreFrame.x,
+      this.bestScoreFrame.y + 200
+    );
+    this.addAchievementsButton(
+      this.replayButton.x + 150,
+      this.replayButton.y + 130
+    );
+    this.addRankingButton(this.replayButton.x - 150, this.replayButton.y + 130);
+    this.addResponseText(this.shareButton.x, this.shareButton.y + 60);
+    this.addMedal(this.scoreBoard.x - 150, this.scoreBoard.y - 60);
+    this.container = this.scene.add.container(
+      halfGameWidth,
+      -this.scoreBoard.displayHeight,
+      [
+        this.scoreBoard,
+        this.scoreText,
+        this.bestScoreText,
+        this.shareButton,
+        this.responseText,
+        this.replayButton,
+        this.achievementsButton,
+        this.rankingButton,
+        this.medalColor,
+        this.medal,
+        this.bestScoreFrame,
+      ]
+    );
   }
 }
 function addText(scene, x, y, text) {

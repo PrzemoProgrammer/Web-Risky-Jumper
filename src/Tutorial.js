@@ -10,31 +10,26 @@ class Tutorial {
     this.repeats = 0;
     this.maxRepeats = 2;
 
-    this.addBackground(gameStartX, gameStartY);
-    this.addHand(halfGameWidth, this.gh - 300);
-    this.addTouchedHand(halfGameWidth, this.gh - 300);
-    this.addLine(this.x, this.y);
-
+    this.createComponents()
     this.animHand();
   }
 
   addBackground(x, y) {
-    this.bg = this.scene.add
-      .image(x, y, "darkScreen")
+    this.bg = new Sprite(this.scene, x, y, "darkScreen")
       .setOrigin(0, 0)
       .setDisplaySize(gameWidth + deltaX, gameHeight + deltaY);
   }
 
   addHand(x, y) {
-    this.hand1 = this.scene.add.image(x, y, "hand1");
+    this.hand1 = new Sprite(this.scene, x, y, "hand1");
   }
 
   addTouchedHand(x, y) {
-    this.hand2 = this.scene.add.image(x, y, "hand2").setVisible(false);
+    this.hand2 = new Sprite(this.scene, x, y, "hand2").setVisible(false);
   }
 
   addLine(x, y) {
-    this.line = this.scene.add.image(x, y, "tutorialLine").setOrigin(0, 0);
+    this.line = new Sprite(this.scene, x, y, "tutorialLine").setOrigin(0, 0);
     this.line.displayWidth = 50;
   }
 
@@ -88,5 +83,12 @@ class Tutorial {
         this.animHand();
       },
     });
+  }
+
+  createComponents() {
+    this.addBackground(gameStartX, gameStartY);
+    this.addHand(halfGameWidth, this.gh - 300);
+    this.addTouchedHand(halfGameWidth, this.gh - 300);
+    this.addLine(this.x, this.y);
   }
 }

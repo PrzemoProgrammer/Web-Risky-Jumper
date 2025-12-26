@@ -8,40 +8,27 @@ class RankingScene extends Phaser.Scene {
     this.halfW = halfGameWidth;
     this.halfH = halfGameHeight;
 
-    this.addLoadingAnim(this.halfW, this.halfH);
     this.bestScore = Number(localStorage.getItem("bestScore")) || 0;
     this.previousScene = currentScene;
     this.audio = this.game.audio;
     this.labels = [];
-    this.addBackground(gameStartX, gameStartY);
-    this.addLayer1(gameStartX, gameHeight);
-    this.addGround(gameStartX, gameHeight);
-    this.addLeaderBoardText(this.halfW, gameStartY + 100);
-    this.addPlaceholder(this.halfW, gameStartY + 300);
-    this.addBackButton(this.halfW, gameHeight - 150);
-    this.labelY = this.placeholder.y + this.placeholder.height + 40;
-    this.cameras.main.setZoom(calculateVerticalScaleFactor());
-    this.addPointerListener();
-    this.createMask();
-    await this.addLabels();
+
+    this.createComponents()
   }
 
   addBackground(x, y) {
-    this.background = this.add
-      .image(x, y, "menuBg")
+    this.background = new Sprite(this, x, y, "menuBg")
       .setOrigin(0, 0)
       .setDisplaySize(gameWidth + deltaX, gameHeight + deltaY);
   }
 
   addLayer1(x, y) {
-    this.add
-      .tileSprite(x, y, gameWidth + deltaX, 1240, "menuLayer1")
+    new TileSprite(this, x, y, gameWidth + deltaX, 1240, "menuLayer1")
       .setOrigin(0, 1);
   }
 
   addGround(x, y) {
-    this.add
-      .tileSprite(x, y, gameWidth + deltaX, 55, "ground")
+    new TileSprite(this, x, y, gameWidth + deltaX, 55, "ground")
       .setOrigin(0, 1)
       .setDepth(9999);
   }
@@ -58,14 +45,13 @@ class RankingScene extends Phaser.Scene {
   }
 
   addPlaceholder(x, y) {
-    this.placeholder = this.add
-      .image(x, y, "leaderBoardStatus")
+    this.placeholder = new Sprite(this, x, y, "leaderBoardStatus")
       .setDepth(100)
       .setOrigin(0.5, 0);
   }
 
   addLeaderBoardText(x, y) {
-    this.add.image(x, y, "leaderboardText").setOrigin(0.5, 0).setScale(0.7);
+    new Sprite(this, x, y, "leaderboardText").setOrigin(0.5, 0).setScale(0.7);
   }
 
   addSoundText(x, y) {
@@ -205,7 +191,7 @@ class RankingScene extends Phaser.Scene {
   }
 
   addLoadingAnim(x, y) {
-    this.loading = this.add.image(x, y, "loading").setDepth(105);
+    this.loading = new Sprite(this, x, y, "loading").setDepth(105);
 
     this.tweens.add({
       targets: this.loading,
@@ -226,5 +212,20 @@ class RankingScene extends Phaser.Scene {
       .setColor("#FF0000")
       .setFontSize(60)
       .setStroke("#000000");
+  }
+
+  createComponents() {
+    this.addLoadingAnim(this.halfW, this.halfH);
+    this.addBackground(gameStartX, gameStartY);
+    this.addLayer1(gameStartX, gameHeight);
+    this.addGround(gameStartX, gameHeight);
+    this.addLeaderBoardText(this.halfW, gameStartY + 100);
+    this.addPlaceholder(this.halfW, gameStartY + 300);
+    this.addBackButton(this.halfW, gameHeight - 150);
+    this.labelY = this.placeholder.y + this.placeholder.height + 40;
+    this.cameras.main.setZoom(calculateVerticalScaleFactor());
+    this.addPointerListener();
+    this.createMask();
+    this.addLabels();
   }
 }

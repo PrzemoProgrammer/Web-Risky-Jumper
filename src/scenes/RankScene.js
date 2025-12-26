@@ -11,47 +11,39 @@ class RankScene extends Phaser.Scene {
     this.bestScore = Number(localStorage.getItem("bestScore")) || 0;
     this.previousScene = currentScene;
     this.audio = this.game.audio;
-    this.addBackground(gameStartX, gameStartY);
-    this.addLayer1(gameStartX, gameHeight);
-    this.addGround(gameStartX, gameHeight);
-    this.addRankText(this.halfW, gameStartY + 160);
-    this.addMedalShine(this.halfW, this.halfH);
-    // this.addMiddleLayer(this.halfW, this.halfH + 50);
-    this.addMedalColor(this.halfW, this.halfH + 50);
-    this.addMedal(this.halfW, this.halfH + 50);
-    this.addBackButton();
     this.medalColors = [9127187, 7568545, 16170496, 205];
-    this.updateMedalColor();
+
+    this.createComponents()
+    this.updateMedalColor()
+
     this.cameras.main.setZoom(calculateVerticalScaleFactor());
   }
 
   addBackground(x, y) {
-    this.add
-      .image(x, y, "menuBg")
+    new Sprite(this, x, y, "menuBg")
       .setOrigin(0, 0)
       .setDisplaySize(gameWidth + deltaX, gameHeight + deltaY);
   }
 
   addLayer1(x, y) {
-    this.add
-      .tileSprite(x, y, gameWidth + deltaX, 1240, "menuLayer1")
+    new TileSprite(this, x, y, gameWidth + deltaX, 1240, "menuLayer1")
       .setOrigin(0, 1);
   }
 
   addGround(x, y) {
-    this.add.tileSprite(x, y, gameWidth + deltaX, 55, "ground").setOrigin(0, 1);
+    new TileSprite(this, x, y, gameWidth + deltaX, 55, "ground").setOrigin(0, 1);
   }
   addRankText(x, y) {
-    this.add.image(x, y, "medalText").setScale(0.8);
+    new Sprite(this, x, y, "medalText").setScale(0.8);
   }
   addMiddleLayer(x, y) {
-    this.add.image(x, y, "rankStars");
+    new Sprite(this, x, y, "rankStars");
   }
   addMedalColor(x, y) {
-    this.middle = this.add.image(x, y, "rankScreenMedalColor").setTint(9127187);
+    this.middle = new Sprite(this, x, y, "rankScreenMedalColor").setTint(9127187);
   }
   addMedal(x, y) {
-    this.add.image(x, y, "rankScreenMedal");
+    new Sprite(this, x, y, "rankScreenMedal");
   }
   updateMedalColor() {
     this.medalColors.forEach((color, index) => {
@@ -60,7 +52,7 @@ class RankScene extends Phaser.Scene {
   }
 
   addMedalShine(x, y) {
-    this.shine = this.add.image(x, y, "medalShine");
+    this.shine = new Sprite(this, x, y, "medalShine");
 
     this.tweens.add({
       targets: this.shine,
@@ -79,5 +71,16 @@ class RankScene extends Phaser.Scene {
       this.scene.setVisible(true, this.previousScene);
       this.scene.pause();
     });
+  }
+
+  createComponents() {
+    this.addBackground(gameStartX, gameStartY);
+    this.addLayer1(gameStartX, gameHeight);
+    this.addGround(gameStartX, gameHeight);
+    this.addRankText(this.halfW, gameStartY + 160);
+    this.addMedalShine(this.halfW, this.halfH);
+    this.addMedalColor(this.halfW, this.halfH + 50);
+    this.addMedal(this.halfW, this.halfH + 50);
+    this.addBackButton();
   }
 }
