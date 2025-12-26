@@ -1,4 +1,4 @@
-const SERVER_URL = "http://murawscy-server.pl"
+const SERVER_URL = "https://murawscy-server.pl"
 const PREFX = "riskyJumperWeb";
 
 const headers = {
