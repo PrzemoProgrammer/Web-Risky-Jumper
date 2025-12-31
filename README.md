@@ -1,3 +1,5 @@
+***Some parts of the code are minified.***
+
 <img align="right" alt="coding" src="https://play-lh.googleusercontent.com/t8Ql4rJgl1Ta-QCUBDAb3GZaQ8hL7lQu2WFeI3zxwJmQ0W0A-2fJ4bJw8U7GKqcdwtM" width="100" height="auto">
 
 # Web Game Risky Jumper
